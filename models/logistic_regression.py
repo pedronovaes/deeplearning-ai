@@ -2,7 +2,7 @@ import numpy as np
 
 
 class LogisticRegression:
-    def __init__(self, learning_rate=0.009, num_iterations=100, print_cost=False):
+    def __init__(self, learning_rate=0.5, num_iterations=2000, print_cost=False):
         self.learning_rate = learning_rate
         self.num_iterations = num_iterations
         self.print_cost = print_cost
@@ -48,7 +48,6 @@ class LogisticRegression:
         return grads, cost
 
     def optimize(self, w, b, X, y):
-        print(self.num_iterations)
         costs = []
 
         for i in range(self.num_iterations):
@@ -75,3 +74,17 @@ class LogisticRegression:
         grads = {'dw': dw, 'db': db}
 
         return params, grads, costs
+
+    def predict(self, X):
+        m = X.shape[1]
+        y_prediction = np.zeros((1, m))
+        self.w = self.w.reshape(X.shape[0], 1)
+
+        # Compute vector "A" predicting the probabilities
+        A = self.sigmoid(np.dot(self.w.T, X) + self.b)
+
+        # Convert probabilities A[0, i] to actual predictions p[0, i]
+        for i in range(A.shape[1]):
+            y_prediction[0, i] = 1 if A[0, i] > 0.5 else 0
+
+        return y_prediction
